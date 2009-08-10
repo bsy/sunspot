@@ -123,7 +123,9 @@ module Sunspot
         # String:: Solr API representation of given value
         #
         def solr_value(value = @value)
-          escape(@field.to_indexed(value))
+          solr_value = escape(@field.to_indexed(value))
+          solr_value = "\"#{solr_value}\"" if solr_value.index(' ')
+          solr_value
         end
       end
 
@@ -184,7 +186,8 @@ module Sunspot
         private
 
         def to_solr_conditional
-          "[#{solr_value(@value.first)} TO #{solr_value(@value.last)}]"
+          first, last = [@value.first, @value.last].sort
+          "[#{solr_value(first)} TO #{solr_value(last)}]"
         end
       end
 
