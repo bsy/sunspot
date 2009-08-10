@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sunspot}
-  s.version = "0.9.4"
+  s.version = "0.10.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mat Brown", "Peer Allan", "Dmitriy Dzema", "Benjamin Krause"]
-  s.date = %q{2009-07-29}
+  s.date = %q{2009-08-10}
   s.description = %q{Library for expressive, powerful interaction with the Solr search engine}
   s.email = %q{mat@patch.com}
   s.executables = ["sunspot-solr", "sunspot-configure-solr"]
@@ -51,6 +51,8 @@ Gem::Specification.new do |s|
      "lib/sunspot/query/dynamic_query.rb",
      "lib/sunspot/query/field_facet.rb",
      "lib/sunspot/query/field_query.rb",
+     "lib/sunspot/query/highlighting.rb",
+     "lib/sunspot/query/local.rb",
      "lib/sunspot/query/pagination.rb",
      "lib/sunspot/query/query_facet.rb",
      "lib/sunspot/query/query_facet_row.rb",
@@ -62,6 +64,7 @@ Gem::Specification.new do |s|
      "lib/sunspot/query_facet_row.rb",
      "lib/sunspot/schema.rb",
      "lib/sunspot/search.rb",
+     "lib/sunspot/search/highlight.rb",
      "lib/sunspot/search/hit.rb",
      "lib/sunspot/session.rb",
      "lib/sunspot/setup.rb",
@@ -85,16 +88,43 @@ Gem::Specification.new do |s|
      "solr/start.jar",
      "solr/webapps/solr.war",
      "spec/api/adapters_spec.rb",
-     "spec/api/build_search_spec.rb",
+     "spec/api/indexer/attributes_spec.rb",
+     "spec/api/indexer/batch_spec.rb",
+     "spec/api/indexer/dynamic_fields_spec.rb",
+     "spec/api/indexer/fixed_fields_spec.rb",
+     "spec/api/indexer/fulltext_spec.rb",
+     "spec/api/indexer/removal_spec.rb",
+     "spec/api/indexer/spec_helper.rb",
      "spec/api/indexer_spec.rb",
-     "spec/api/query_spec.rb",
-     "spec/api/search_retrieval_spec.rb",
+     "spec/api/query/connectives_spec.rb",
+     "spec/api/query/dsl_spec.rb",
+     "spec/api/query/dynamic_fields_spec.rb",
+     "spec/api/query/faceting_spec.rb",
+     "spec/api/query/fulltext_spec.rb",
+     "spec/api/query/highlighting_spec.rb",
+     "spec/api/query/local_spec.rb",
+     "spec/api/query/ordering_pagination_spec.rb",
+     "spec/api/query/scope_spec.rb",
+     "spec/api/query/spec_helper.rb",
+     "spec/api/query/types_spec.rb",
+     "spec/api/search/dynamic_fields_spec.rb",
+     "spec/api/search/faceting_spec.rb",
+     "spec/api/search/highlighting_spec.rb",
+     "spec/api/search/hits_spec.rb",
+     "spec/api/search/results_spec.rb",
+     "spec/api/search/search_spec.rb",
+     "spec/api/search/spec_helper.rb",
      "spec/api/session_spec.rb",
      "spec/api/spec_helper.rb",
      "spec/api/sunspot_spec.rb",
+     "spec/helpers/indexer_helper.rb",
+     "spec/helpers/query_helper.rb",
+     "spec/helpers/search_helper.rb",
      "spec/integration/dynamic_fields_spec.rb",
      "spec/integration/faceting_spec.rb",
+     "spec/integration/highlighting_spec.rb",
      "spec/integration/keyword_search_spec.rb",
+     "spec/integration/local_search_spec.rb",
      "spec/integration/scoped_search_spec.rb",
      "spec/integration/spec_helper.rb",
      "spec/integration/stored_fields_spec.rb",
@@ -107,6 +137,7 @@ Gem::Specification.new do |s|
      "spec/mocks/mock_record.rb",
      "spec/mocks/photo.rb",
      "spec/mocks/post.rb",
+     "spec/mocks/super_class.rb",
      "spec/mocks/user.rb",
      "spec/spec_helper.rb",
      "tasks/gemspec.rake",
@@ -117,38 +148,65 @@ Gem::Specification.new do |s|
      "tasks/todo.rake",
      "templates/schema.xml.haml"
   ]
-  s.has_rdoc = true
   s.homepage = %q{http://github.com/outoftime/sunspot}
   s.rdoc_options = ["--charset=UTF-8", "--webcvs=http://github.com/outoftime/sunspot/tree/master/%s", "--title", "Sunspot - Solr-powered search for Ruby objects - API Documentation", "--main", "README.rdoc"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.2}
+  s.rubygems_version = %q{1.3.3}
   s.summary = %q{Library for expressive, powerful interaction with the Solr search engine}
   s.test_files = [
-    "spec/spec_helper.rb",
-     "spec/integration/spec_helper.rb",
-     "spec/integration/faceting_spec.rb",
-     "spec/integration/scoped_search_spec.rb",
-     "spec/integration/keyword_search_spec.rb",
+    "spec/api/adapters_spec.rb",
+     "spec/api/indexer/attributes_spec.rb",
+     "spec/api/indexer/batch_spec.rb",
+     "spec/api/indexer/dynamic_fields_spec.rb",
+     "spec/api/indexer/fixed_fields_spec.rb",
+     "spec/api/indexer/fulltext_spec.rb",
+     "spec/api/indexer/removal_spec.rb",
+     "spec/api/indexer/spec_helper.rb",
+     "spec/api/indexer_spec.rb",
+     "spec/api/query/connectives_spec.rb",
+     "spec/api/query/dsl_spec.rb",
+     "spec/api/query/dynamic_fields_spec.rb",
+     "spec/api/query/faceting_spec.rb",
+     "spec/api/query/fulltext_spec.rb",
+     "spec/api/query/highlighting_spec.rb",
+     "spec/api/query/local_spec.rb",
+     "spec/api/query/ordering_pagination_spec.rb",
+     "spec/api/query/scope_spec.rb",
+     "spec/api/query/spec_helper.rb",
+     "spec/api/query/types_spec.rb",
+     "spec/api/search/dynamic_fields_spec.rb",
+     "spec/api/search/faceting_spec.rb",
+     "spec/api/search/highlighting_spec.rb",
+     "spec/api/search/hits_spec.rb",
+     "spec/api/search/results_spec.rb",
+     "spec/api/search/search_spec.rb",
+     "spec/api/search/spec_helper.rb",
+     "spec/api/session_spec.rb",
+     "spec/api/spec_helper.rb",
+     "spec/api/sunspot_spec.rb",
+     "spec/helpers/indexer_helper.rb",
+     "spec/helpers/query_helper.rb",
+     "spec/helpers/search_helper.rb",
      "spec/integration/dynamic_fields_spec.rb",
+     "spec/integration/faceting_spec.rb",
+     "spec/integration/highlighting_spec.rb",
+     "spec/integration/keyword_search_spec.rb",
+     "spec/integration/local_search_spec.rb",
+     "spec/integration/scoped_search_spec.rb",
+     "spec/integration/spec_helper.rb",
      "spec/integration/stored_fields_spec.rb",
      "spec/integration/test_pagination.rb",
-     "spec/mocks/mock_record.rb",
-     "spec/mocks/blog.rb",
      "spec/mocks/adapters.rb",
-     "spec/mocks/mock_adapter.rb",
-     "spec/mocks/user.rb",
-     "spec/mocks/photo.rb",
-     "spec/mocks/post.rb",
+     "spec/mocks/blog.rb",
      "spec/mocks/comment.rb",
      "spec/mocks/connection.rb",
-     "spec/api/search_retrieval_spec.rb",
-     "spec/api/spec_helper.rb",
-     "spec/api/session_spec.rb",
-     "spec/api/adapters_spec.rb",
-     "spec/api/build_search_spec.rb",
-     "spec/api/sunspot_spec.rb",
-     "spec/api/indexer_spec.rb",
-     "spec/api/query_spec.rb"
+     "spec/mocks/mock_adapter.rb",
+     "spec/mocks/mock_record.rb",
+     "spec/mocks/photo.rb",
+     "spec/mocks/post.rb",
+     "spec/mocks/super_class.rb",
+     "spec/mocks/user.rb",
+     "spec/spec_helper.rb"
   ]
 
   if s.respond_to? :specification_version then
