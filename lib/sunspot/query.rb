@@ -5,7 +5,7 @@
 end
 
 module Sunspot
-  module Query #:nodoc:
+  module Query #:nodoc: all
     # 
     # This class encapsulates a query that is to be sent to Solr. The query is
     # constructed in the block passed to the Sunspot.search method, using the
@@ -21,10 +21,10 @@ module Sunspot
     class Query < FieldQuery
       attr_reader :query_facets #:nodoc:
 
-      def initialize(setup, configuration) #:nodoc:
+      def initialize(types, setup, configuration) #:nodoc:
         super(setup)
         @query_facets = {}
-        @components << @base_query = BaseQuery.new(setup)
+        @components << @base_query = BaseQuery.new(types, setup)
         @components << @pagination = Pagination.new(configuration)
         @components << @sort = SortComposite.new
       end
@@ -50,14 +50,6 @@ module Sunspot
       def add_text_fields_scope
         @components << scope = Scope.new(TextFieldSetup.new(@setup))
         scope
-      end
-
-      # 
-      # Add random ordering to the search. This can be added after other
-      # field-based sorts if desired.
-      #
-      def order_by_random #:nodoc:
-        add_sort(Sort.new(RandomField.new))
       end
 
       # 

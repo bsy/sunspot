@@ -49,8 +49,8 @@ module Sunspot
           Setup.for(types.first)
         else
           CompositeSetup.for(types)
-        end
-      Search.new(connection, setup, Query::Query.new(setup, @config))
+          end
+      Search.new(connection, setup, Query::Query.new(types, setup, @config))
     end
 
     #
@@ -195,6 +195,10 @@ module Sunspot
         end
     end
 
+    # 
+    # Return an indexer pointing at this session's connection. One is created
+    # and saved for each sesion.
+    #
     def indexer
       @indexer ||= Indexer.new(connection)
     end

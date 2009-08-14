@@ -82,9 +82,10 @@ module Sunspot
       indexed_name.hash
     end
 
-    def ==(field)
+    def eql?(field)
       indexed_name == field.indexed_name
     end
+    alias_method :==, :eql?
   end
 
   # 
@@ -142,30 +143,6 @@ module Sunspot
     #
     def indexed_name
       "#{super}#{'m' if @multiple}#{'s' if @stored}"
-    end
-  end
-
-  # 
-  # RandomField instances are used for random sorting.
-  #
-  class RandomField #:nodoc:
-    # 
-    # Never multiple, but this has to return false so Sunspot doesn't barf
-    # when you try to order by it.
-    #
-    def multiple?
-      false
-    end
-
-    # 
-    # Solr uses the dynamic field name as a seed for random, so we randomize the
-    # field name accordingly.
-    #
-    # #XXX I think it's bad to use a random number as a seed. Would it be
-    # better to pass in the current timestamp or some such thing?
-    #
-    def indexed_name
-      "random_#{rand(1<<16)}"
     end
   end
 end
