@@ -56,12 +56,6 @@ module Sunspot
       def to_params
         params = 
           if @local
-            if @fulltext
-              raise(
-                IllegalSearchError,
-                "Can't perform search with both fulltext and geographical components due to LocalSolr limitations"
-              )
-            end
             { :q => @scope.to_boolean_phrase }
           else
             @scope.to_params
